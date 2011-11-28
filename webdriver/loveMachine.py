@@ -25,7 +25,7 @@ PASSWORD = ""
 LIKE_PATH = "//ul[@id='home_stream']//button[@name='like']"
 # For testing purposes
 SIMULATE = 0
-AS_LOVEMACHINE = 0
+PAGE_USERNAME = ""
 
 
 from selenium import webdriver
@@ -142,22 +142,31 @@ elif len(sys.argv) == 3 :
 	LOGIN = sys.argv[1]
 	PASSWORD = sys.argv[2]
 	
+elif len(sys.argv) == 4: 
+	LOGIN = sys.argv[1]
+	PASSWORD = sys.argv[2]
+	PAGE_USERNAME = sys.argv[3]
+
 else :
 	print "Wrong arguments for " + sys.argv[0]
-	print "Usage: $:python " + sys.argv[0] + " <facebook-login> <password>"
+	print "Usage:" 
+	print "\t$:python " + sys.argv[0] + " <facebook-login> <password> "
+	print "or"
+	print "\t$:python " + sys.argv[0] + " <facebook-login> <password> <page-username>"
+	print "with <page-username> being the official username of the Facebook page you admin" 
 	quit()
 
 totalLikeClicked = 0
 
 driver = webdriver.Firefox()
-driver.get("http://facebook.com/lvmchn")
+driver.get("http://facebook.com/" + PAGE_USERNAME)
 
 while not logIn(driver, LOGIN, PASSWORD):
 	askForLoginAndPassword()
-	driver.get("http://facebook.com/lvmchn")
+	driver.get("http://facebook.com/" + PAGE_USERNAME)
 
 # If [loveMachine] admin
-if AS_LOVEMACHINE:
+if PAGE_USERNAME != "":
 	wait_and_find_element(driver, "//form[@id='pageIdentitySwitchForm']//a", 10).click()
 	print "Identity switch as [loveMachine]"  
 
@@ -229,7 +238,7 @@ totaltime = endtime-starttime
 if totalLikeClicked != 0 :
 	message = str(totalLikeClicked) + " ♥ (" + strTime(totaltime) + ") @[288578057830204:0]"
 	print "Updating status: " + message
-	if AS_LOVEMACHINE:
+	if PAGE_USERNAME != "":
 		updatePageStatus(driver, message)
 	else: 
 		updateUserStatus(driver, message)
