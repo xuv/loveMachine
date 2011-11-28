@@ -25,7 +25,7 @@ PASSWORD = ""
 LIKE_PATH = "//ul[@id='home_stream']//button[@name='like']"
 # For testing purposes
 SIMULATE = 0
-AS_LOVEMACHINE = 1
+AS_LOVEMACHINE = 0
 
 
 from selenium import webdriver
