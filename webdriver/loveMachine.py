@@ -68,7 +68,7 @@ def logIn(webdriver, login, password):
 	email_el = webdriver.find_element_by_name("email")
 	pass_el =  webdriver.find_element_by_name("pass")
 	email_el.send_keys(login)
-	pass_el.send_keys(password)
+	pass_el.send_keys(password.decode("utf-8"))
 	webdriver.find_element_by_xpath("//form[@id='login_form']//input[@type='submit']").click()
 	current_url = webdriver.current_url
 	print "url: " + current_url
@@ -90,6 +90,7 @@ def askForLoginAndPassword():
 	PASSWORD = raw_input("Password: ")
 	while PASSWORD == "":
 		PASSWORD = raw_input("Password: ")
+	return LOGIN, PASSWORD
 		
 def strTime(totaltime):
 	t = ""
@@ -136,7 +137,7 @@ def updatePageStatus(webdriver, text):
 ### Main
 
 if len(sys.argv) == 1 :
-	askForLoginAndPassword()
+	LOGIN, PASSWORD = askForLoginAndPassword()
 	
 elif len(sys.argv) == 3 : 
 	LOGIN = sys.argv[1]
@@ -162,7 +163,7 @@ driver = webdriver.Firefox()
 driver.get("http://facebook.com/" + PAGE_USERNAME)
 
 while not logIn(driver, LOGIN, PASSWORD):
-	askForLoginAndPassword()
+	LOGIN, PASSWORD = askForLoginAndPassword()
 	driver.get("http://facebook.com/" + PAGE_USERNAME)
 
 # If [loveMachine] admin
@@ -171,7 +172,9 @@ if PAGE_USERNAME != "":
 	print "Identity switch as [loveMachine]"  
 
 # Getting to the Facebook news stream
+driver.switch_to_default_content() # To prevent getWindow null error
 driver.get("http://facebook.com")
+
 if wait_and_find_elements(driver, "//ul[@id='home_stream']/li", 5) == 0 :
 	print "Trying to find news stream" 
 	# TODO: This will clearly not work in another language than english
