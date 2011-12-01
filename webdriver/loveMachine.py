@@ -116,7 +116,7 @@ def getAvailableLikes(webdriver, likePath):
 def updateUserStatus(webdriver, text):
 	# Update status
 	webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
-	status = webdriver.find_element_by_xpath("//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']")
+	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
 	#time.sleep(1)
 	#status.send_keys(Keys.ENTER)
