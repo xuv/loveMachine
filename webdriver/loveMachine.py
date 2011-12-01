@@ -81,7 +81,7 @@ def logIn(webdriver, login, password):
 	
 def logOut(webdriver):
 	webdriver.find_element_by_xpath("//div[@class='menuPulldown']").click()
-	webdriver.find_element_by_xpath("//input[@value='Log Out']").click()
+	webdriver.find_element_by_xpath("//form[@id='logout_form']//input[@type='submit']").click()
 
 def askForLoginAndPassword():
 	LOGIN = raw_input("Facebook login: ")
@@ -116,7 +116,7 @@ def getAvailableLikes(webdriver, likePath):
 def updateUserStatus(webdriver, text):
 	# Update status
 	webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
-	status = webdriver.find_element_by_name("xhpc_message_text")
+	status = webdriver.find_element_by_xpath("//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']")
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
 	#time.sleep(1)
 	#status.send_keys(Keys.ENTER)
