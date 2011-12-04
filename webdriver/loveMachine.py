@@ -3,30 +3,32 @@
 
 #    [loveMachine] = automatic facebook like processor
 #    Copyright (C) 2011  Julien "juego" Deswaef
-#
+
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
-#
+
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
-#
+
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-### Config
+# Configuration
 # Facebook credentials
 LOGIN = ""
 PASSWORD = ""
+
+PAGE_USERNAME = ""
+PUBLIC_MODE = True
+
 # 
 LIKE_PATH = "//ul[@id='home_stream']//button[@name='like']"
 # For testing purposes
-SIMULATE = 0
-PAGE_USERNAME = ""
-
+SIMULATE = False
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -118,8 +120,12 @@ def updateUserStatus(webdriver, text):
 	webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
 	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
-	#time.sleep(1)
-	#status.send_keys(Keys.ENTER)
+	if PUBLIC_MODE:
+		try:
+			wait_and_find_element(webdriver, "//div[@id='pagelet_privacy_widget']", 5).click()
+			wait_and_find_element(webdriver, "//form[@class='attachmentForm']//li[@class='fbPrivacyAudienceSelectorOption']/a", 5).click()
+		except:
+			print "Can't change  the privacy mode for that post." 
 	try: 
 		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//input[@type='submit']", 5).click()
 	except:
@@ -127,7 +133,7 @@ def updateUserStatus(webdriver, text):
 	
 def updatePageStatus(webdriver, text):
 	wait_and_find_element(webdriver, "//form[@class='attachmentForm']//div[@class='wrap']", 5).click()
-	status = webdriver.find_element_by_name("xhpc_message_text")
+	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status.send_keys(text.decode("utf-8"))
 	try: 
 		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//input[@type='submit']", 5).click()
