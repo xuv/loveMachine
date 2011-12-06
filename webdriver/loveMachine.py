@@ -3,6 +3,7 @@
 
 #    [loveMachine] = automatic facebook like processor
 #    Copyright (C) 2011  Julien "juego" Deswaef
+#	 Info: http://w.xuv.be/projects/love_machine
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -168,14 +169,18 @@ totalLikeClicked = 0
 driver = webdriver.Firefox()
 driver.get("http://facebook.com/" + PAGE_USERNAME)
 
-while not logIn(driver, LOGIN, PASSWORD):
-	LOGIN, PASSWORD = askForLoginAndPassword()
-	driver.get("http://facebook.com/" + PAGE_USERNAME)
+if not logIn(driver, LOGIN, PASSWORD):
+	print "Wrong login and/or password"
+	print "Sometimes this happens even with the correct information..."
+	print "Verify your information and rerun the software."
+	print "Or send a bug report ;)"
+	driver.close()
+	sys.exit()
 
 # If [loveMachine] admin
 if PAGE_USERNAME != "":
 	wait_and_find_element(driver, "//form[@id='pageIdentitySwitchForm']//a", 10).click()
-	print "Identity switch as [loveMachine]"  
+	print "Identity switch as " + PAGE_USERNAME  
 
 # Getting to the Facebook news stream
 driver.switch_to_default_content() # To prevent getWindow null error
@@ -220,7 +225,6 @@ while len(likes) > len(badLikesId) and not SIMULATE :
 					time.sleep(.5)
 				else:
 					totalLikeClicked+=1
-					print "like #" + str(totalLikeClicked)
 					break
 			
 		if good:
@@ -230,11 +234,11 @@ while len(likes) > len(badLikesId) and not SIMULATE :
 					likeToClick.is_displayed()
 				except:
 					# will  be called when likeToClick has disappeared
-					print "like processed"
+					print "like #" + str(totalLikeClicked) + " processed"
 					break
 				else:
 					if i == 19 :
-						print "Facebook error: like has not been processed"
+						print "Facebook error: like #" + str(totalLikeClicked) + " has not been processed"
 						totalLikeClicked-=1
 						badLikesId.append(likeToClick.id)
 				time.sleep(.5)
