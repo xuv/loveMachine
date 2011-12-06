@@ -24,7 +24,6 @@ LOGIN = ""
 PASSWORD = ""
 
 PAGE_USERNAME = ""
-PUBLIC_MODE = True
 
 # 
 LIKE_PATH = "//ul[@id='home_stream']//button[@name='like']"
@@ -121,12 +120,6 @@ def updateUserStatus(webdriver, text):
 	webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
 	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
-	if PUBLIC_MODE:
-		try:
-			wait_and_find_element(webdriver, "//div[@id='pagelet_privacy_widget']", 5).click()
-			wait_and_find_element(webdriver, "//form[@class='attachmentForm']//li[@class='fbPrivacyAudienceSelectorOption']/a", 5).click()
-		except:
-			print "Can't change  the privacy mode for that post." 
 	try: 
 		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//input[@type='submit']", 5).click()
 	except:
