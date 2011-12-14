@@ -83,7 +83,7 @@ def logIn(webdriver, login, password):
 	
 def logOut(webdriver):
 	webdriver.find_element_by_xpath("//div[@class='menuPulldown']").click()
-	webdriver.find_element_by_xpath("//form[@id='logout_form']//input[@type='submit']").click()
+	wait_and_find_element(webdriver, "//form[@id='logout_form']//input[@type='submit']", 2).click()
 
 def askForLoginAndPassword():
 	LOGIN = raw_input("Facebook login: ")
