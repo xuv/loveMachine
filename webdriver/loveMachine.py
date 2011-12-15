@@ -37,6 +37,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
+
 import time
 import sys
 
@@ -117,7 +118,11 @@ def getAvailableLikes(webdriver, likePath):
 
 def updateUserStatus(webdriver, text):
 	# Update status
-	webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
+	try:
+		webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
+	except:
+		print "Could not click on //span[@id='composerTourStart'] "
+	
 	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
 	try: 
@@ -159,7 +164,11 @@ else :
 
 totalLikeClicked = 0
 
-driver = webdriver.Firefox()
+#driver = webdriver.Firefox()
+
+# Using Chrome
+driver = webdriver.Chrome("../chromedriver")
+
 driver.get("http://facebook.com/" + PAGE_USERNAME)
 
 if not logIn(driver, LOGIN, PASSWORD):
@@ -248,6 +257,9 @@ if totalLikeClicked != 0 :
 		updatePageStatus(driver, message)
 	else: 
 		updateUserStatus(driver, message)
+	# wait for status to be updated
+	time.sleep(2)
+	
 
 logOut(driver)
 
