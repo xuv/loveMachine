@@ -121,7 +121,7 @@ def getAvailableLikes(webdriver, likePath):
 def updateUserStatus(webdriver, text):
 	# Update status
 	try:
-		webdriver.find_element_by_xpath("//span[@id='composerTourStart']").click()
+		webdriver.find_element_by_xpath("//span[@id='composerTourStart']//a").click()
 	except:
 		print "Could not click on //span[@id='composerTourStart'] "
 	
@@ -180,7 +180,7 @@ if FIREFOX:
 	driver = webdriver.Firefox()
 
 if CHROME: 
-	driver = webdriver.Chrome("../chromedriver")
+	driver = webdriver.Chrome("./chromedriver")
 
 driver.get("http://facebook.com/" + PAGE_USERNAME)
 
@@ -232,8 +232,8 @@ while len(likes) > len(badLikesId) and not SIMULATE :
 				try:
 					likeToClick.click()
 				except:
-					print "click a like error:" , sys.exc_info()
 					if i == 19 :
+						print "click a like error:" , sys.exc_info()
 						print "Facebook error: like has not been clicked"
 						badLikesId.append(likeToClick.id)
 						good = 0
