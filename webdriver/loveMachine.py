@@ -125,7 +125,8 @@ def updateUserStatus(webdriver, text):
 	except:
 		print "Could not click on //span[@id='composerTourStart'] "
 	
-	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
+	#status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
+	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea", 5)
 	status.send_keys(text.decode("utf-8"))  # with the help from  http://themoritzfamily.com/python-encodings-and-unicode.html
 	try: 
 		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//input[@type='submit']", 5).click()
@@ -133,8 +134,12 @@ def updateUserStatus(webdriver, text):
 		print "Could not click on the Post button"
 	
 def updatePageStatus(webdriver, text):
-	wait_and_find_element(webdriver, "//form[@class='attachmentForm']//div[@class='wrap']", 5).click()
-	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
+	try :
+		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//div[@class='wrap']", 5).click()
+	except:
+		print "Could not click on //form[@class='attachmentForm']//div[@class='wrap'] "
+		
+	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea", 5)
 	status.send_keys(text.decode("utf-8"))
 	try: 
 		wait_and_find_element(webdriver, "//form[@class='attachmentForm']//input[@type='submit']", 5).click()
@@ -149,7 +154,7 @@ if len(sys.argv) == 1 :
 	
 elif len(sys.argv) >= 3 : 
 	LOGIN = sys.argv[-2:-1]
-	PASSWORD = sys.argv[-1:]
+	PASSWORD = sys.argv[-1:][0]
 	options = sys.argv[1:-2]
 	
 	for i in range(len(options)):
@@ -158,14 +163,14 @@ elif len(sys.argv) >= 3 :
 		if options[i] == "-CR":
 			CHROME = True
 		if options[i] == "-s":
-			SIMULATE = True
+			SIMULATE = True
 		if options[i] == "-p":
 			PAGE_USERNAME = options[i+1]
 			
 else :
 	print "Wrong arguments for " + sys.argv[0]
 	print "Usage:" 
-	print "$:python " + sys.argv[0] + "[Options] <facebook-login> <password> " 
+	print "$:python " + sys.argv[0] + " [Options] <facebook-login> <password> " 
 	print "Options:\n\t-FF\tuses Firefox webdriver\n\t-CR\tuses Chrome webdriver\n\t-s\tsimulates clicks\n\t-p <page-username>\tswitches identity to the page username"  
 	quit()
 
