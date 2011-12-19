@@ -23,12 +23,14 @@
 LOGIN = ""
 PASSWORD = ""
 
-PAGE_USERNAME = ""
-
 # 
 LIKE_PATH = "//ul[@id='home_stream']//button[@name='like']"
-# For testing purposes
+
+# OPTIONS
 SIMULATE = False
+FIREFOX = False
+CHROME = False
+PAGE_USERNAME = ""
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -143,31 +145,37 @@ def updatePageStatus(webdriver, text):
 
 if len(sys.argv) == 1 :
 	LOGIN, PASSWORD = askForLoginAndPassword()
+	FIREFOX = True
 	
-elif len(sys.argv) == 3 : 
-	LOGIN = sys.argv[1]
-	PASSWORD = sys.argv[2]
+elif len(sys.argv) >= 3 : 
+	LOGIN = sys.argv[-2:-1]
+	PASSWORD = sys.argv[-1:]
+	options = sys.argv[1:-2]
 	
-elif len(sys.argv) == 4: 
-	LOGIN = sys.argv[1]
-	PASSWORD = sys.argv[2]
-	PAGE_USERNAME = sys.argv[3]
-
+	for i in range(len(options)):
+		if options[i] == "-FF":
+			FIREFOX = True
+		if options[i] == "-CR":
+			CHROME = True
+		if options[i] == "-s":
+			SIMULATE = True
+		if options[i] == "-p":
+			PAGE_USERNAME = options[i+1]
+			
 else :
 	print "Wrong arguments for " + sys.argv[0]
 	print "Usage:" 
-	print "\t$:python " + sys.argv[0] + " <facebook-login> <password> "
-	print "or"
-	print "\t$:python " + sys.argv[0] + " <facebook-login> <password> <page-username>"
-	print "with <page-username> being the official username of the Facebook page you admin" 
+	print "$:python " + sys.argv[0] + "[Options] <facebook-login> <password> " 
+	print "Options:\n\t-FF\tuses Firefox webdriver\n\t-CR\tuses Chrome webdriver\n\t-s\tsimulates clicks\n\t-p <page-username>\tswitches identity to the page username"  
 	quit()
 
 totalLikeClicked = 0
 
-#driver = webdriver.Firefox()
+if FIREFOX:
+	driver = webdriver.Firefox()
 
-# Using Chrome
-driver = webdriver.Chrome("../chromedriver")
+if CHROME: 
+	driver = webdriver.Chrome("../chromedriver")
 
 driver.get("http://facebook.com/" + PAGE_USERNAME)
 
@@ -236,7 +244,6 @@ while len(likes) > len(badLikesId) and not SIMULATE :
 					likeToClick.is_displayed()
 				except:
 					# will  be called when likeToClick has disappeared
-					print "like #" + str(totalLikeClicked) + " processed"
 					break
 				else:
 					if i == 19 :
