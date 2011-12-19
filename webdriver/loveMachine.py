@@ -123,7 +123,7 @@ def updateUserStatus(webdriver, text):
 	try:
 		webdriver.find_element_by_xpath("//span[@id='composerTourStart']//a").click()
 	except:
-		print "Could not click on //span[@id='composerTourStart'] "
+		print "Could not click on //span[@id='composerTourStart']//a "
 	
 	#status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea[@name='xhpc_message_text']", 5)
 	status = wait_and_find_element(webdriver, "//form[@class='attachmentForm']//textarea", 5)
