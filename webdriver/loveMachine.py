@@ -220,15 +220,15 @@ badLikesId = []
 
 while len(likes) > len(badLikesId) and not SIMULATE :
 	for likeToClick in likes :
-		good = 1
+		good = True
 		#Check if likeToClick is not already aregistered bad one
 		for bad in badLikesId:
 			if bad is likeToClick.id:
-				good = 0
+				good = False
 		
 		if good :
 			# click it
-			for i in range(20):
+			for i in range(10):
 				try:
 					likeToClick.click()
 				except:
@@ -236,7 +236,7 @@ while len(likes) > len(badLikesId) and not SIMULATE :
 						print "click a like error:" , sys.exc_info()
 						print "Facebook error: like has not been clicked"
 						badLikesId.append(likeToClick.id)
-						good = 0
+						good = False
 					time.sleep(.5)
 				else:
 					totalLikeClicked+=1
