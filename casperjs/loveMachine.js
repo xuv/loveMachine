@@ -1,9 +1,14 @@
 var numberOfLikes = 0;
 var nb = 1;
 var loop = 0;
-var maxLoop = 10;
+var maxLoop = 15;
 var status = ' (y)';
 var init = true;
+
+// Retourne un entier aléatoire entre min et max
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 
 var casper = require('casper').create({
     clientScripts: [
@@ -117,7 +122,9 @@ var doSomeLove = function () {
             if(nb >0){
                 this.repeat(nb, function(){
                     this.then(function(){
-                        this.click('#like' + numberOfLikes);
+                        this.wait(getRandomInt(1000, 10000), function(){
+                            this.click('#like' + numberOfLikes);    
+                        });
                         this.echo('Clicked #like' + numberOfLikes);
                         numberOfLikes++;
                     });
