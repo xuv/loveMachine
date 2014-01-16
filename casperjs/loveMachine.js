@@ -1,7 +1,7 @@
 var numberOfLikes = 0;
 var nb = 1;
 var loop = 0;
-var maxLoop = 15;
+var maxLoop = 20;
 var status = ' (y)';
 var init = true;
 
@@ -68,7 +68,12 @@ var postStatus = function(){
         this.waitWhileVisible('form[action="/ajax/updatestatus.php"] button[type="submit"]', function(){
             this.echo('status written');
             var date = new Date();
-            this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg');
+            this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg', {
+                top: 0,
+                left: 0,
+                width: 1024,
+                height: 768
+            });
             this.echo('Screenshot taken');
             this.exit();
         });    
