@@ -1,9 +1,10 @@
 var numberOfLikes = 0;
 var nb = 1;
 var loop = 0;
-var maxLoop = 20;
+var maxLoop = 15;
 var status = ' (y)';
 var init = true;
+var publishStatus = false;
 
 // Retourne un entier aléatoire entre min et max
 function getRandomInt (min, max) {
@@ -14,7 +15,7 @@ var casper = require('casper').create({
     clientScripts: [
         'include/jquery-1.10.2.min.js'
     ],
-    logLevel: "info",              // Only "info" level messages will be logged
+    logLevel: "info", // Only "info" level messages will be logged
     verbose: false,
     viewportSize: {
         width: 1024,
@@ -23,25 +24,24 @@ var casper = require('casper').create({
     waitTimeout: 10000
 });
 
-
-casper.start('https://facebook.com', function() {
-    casper.then(function(){
-        if( casper.cli.get('email') === undefined || casper.cli.get('password') == undefined ) {
-            this.echo('usage : casperjs loveMachine.js --email=<email-to-log-into-FB> --password=<your-FB-pass>');
-            this.exit();
-        }
-    });
-    this.echo('Starting...');
-});
-
 // Catch console messages from the browser
 casper.on('remote.message', function(msg) {
     this.echo('remote message caught: ' + msg);
 });
 
+var takeScreenshot = function(){
+    this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg', {
+        top: 0,
+        left: 0,
+        width: 1024,
+        height: 768
+    });
+    this.echo('Screenshot taken');
+}
+
 var postStatus = function(){
     this.echo('Total likes : ' + numberOfLikes + '...');
-    if( numberOfLikes > 0 ) {
+    if( publishStatus && numberOfLikes > 0 ) {
         this.echo('Publish status: ' + numberOfLikes + status );
         this.click('textarea[name="xhpc_message"]');
         this.echo('Clicked status box');
@@ -60,32 +60,22 @@ var postStatus = function(){
             // this.wait(1000);
         });
 
-        // Précédent appel renvoie un : [warning] [remote] unable to submit form
-        // Va peut-être falloir remplir à la main ?
-        // ou cliquer sur le bouton "envoyer"
-
-        // Évidemment, il voit tout de suite son texte dans la page vu qu'il est encore affiché dans la zone d'écriture du texte.
         this.waitWhileVisible('form[action="/ajax/updatestatus.php"] button[type="submit"]', function(){
             this.echo('status written');
             var date = new Date();
-            this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg', {
-                top: 0,
-                left: 0,
-                width: 1024,
-                height: 768
-            });
-            this.echo('Screenshot taken');
+            takeScreenshot.call(this);
             this.exit();
         });    
     } else {
         this.echo('No status posted');
+        takeScreenshot.call(this);
         this.exit();
     }
 } 
 
 var doSomeLove = function () {
     if( init ){
-        this.echo('Init...');
+        // this.echo('Init...');
         this.evaluate(function(){
             window.nbLikes = 0;    
         });
@@ -94,14 +84,18 @@ var doSomeLove = function () {
     if (nb > 0 && loop < maxLoop ){
         // Find all 'like' buttons, count them and mark them with a crafted id 
         this.then(function(){
-            this.echo('Starting to doSomeLove');
+            // this.echo('Starting to doSomeLove');
             this.evaluate(function(){
                 window.done = false;
                 $('a.UFILikeLink').each(function(){
                     if($(this).text() === 'Like'){
-                        $(this).attr('id', 'like' + window.nbLikes );
-                        console.log('Creating id="#like' + window.nbLikes + '"' );
-                        window.nbLikes++;
+                        if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
+                            $(this).attr('id', 'like' + window.nbLikes );
+                            console.log('Creating id="#like' + window.nbLikes + '"' );
+                            window.nbLikes++;
+                        } else {
+                            console.log('Already has an ID: ' + $(this).attr('id') );
+                        }
                     }
                 });
                 window.done = true;
@@ -120,7 +114,7 @@ var doSomeLove = function () {
                 return window.nbLikes;
             }) - numberOfLikes;
 
-            this.echo('Wave of likes (nb) : ' + nb);
+            this.echo('Wave #' + loop + ' of likes (nb) : ' + nb);
         });
 
         this.then(function(){
@@ -129,34 +123,47 @@ var doSomeLove = function () {
                     this.then(function(){
                         this.wait(getRandomInt(1000, 10000), function(){
                             this.click('#like' + numberOfLikes);    
+                            this.echo('Clicked #like' + numberOfLikes);
+                            numberOfLikes++;
                         });
-                        this.echo('Clicked #like' + numberOfLikes);
-                        numberOfLikes++;
                     });
                 });    
             } else {
-                this.echo('Pas de loop click');
+                this.echo('No looping click');
             }    
         });
         
         this.then(function(){
-            this.scrollToBottom();
+            // this.scrollToBottom();
+            // this.click('div[id^="more_pager_pagelet"] a');
+            takeScreenshot.call(this);
         });
 
         this.then(function(){
             loop++;
-            this.echo('loop: ' + loop);
+            // this.echo('loop: ' + loop);
+            // End of a love loop. Restart one.
             this.run(doSomeLove);    
         });
-        
     } else {
         this.then(function(){
-            this.echo('Call postStatus');
+            // this.echo('Call postStatus');
+            // Do no more loops. So call the post status and exit.
             postStatus.call(this);
         });
     }
-
 }
+
+// Start
+casper.start('https://facebook.com', function() {
+    casper.then(function(){
+        // Check if login and password have been supplied
+        if( casper.cli.get('email') === undefined || casper.cli.get('password') == undefined ) {
+            this.echo('usage : casperjs loveMachine.js --email=<email-to-log-into-FB> --password=<your-FB-pass>');
+            this.exit();
+        }
+    });
+});
 
 // Log into Facebook
 casper.then(function(){
@@ -172,4 +179,5 @@ casper.waitWhileSelector('form#login_form', doSomeLove, function(){
     this.echo('Never reached homepage. Quitting.').exit();
 });
 
+// Loop the love
 casper.run(doSomeLove);
