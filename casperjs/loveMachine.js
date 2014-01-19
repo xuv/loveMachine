@@ -1,7 +1,7 @@
 var numberOfLikes = 0;
 var nb = 1;
 var loop = 0;
-var maxLoop = 15;
+var maxLoop = 25;
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
@@ -24,6 +24,8 @@ var casper = require('casper').create({
     waitTimeout: 10000
 });
 
+var fs = require('fs');
+
 // Catch console messages from the browser
 casper.on('remote.message', function(msg) {
     this.echo('remote message caught: ' + msg);
@@ -36,11 +38,22 @@ var takeScreenshot = function(){
         width: 1024,
         height: 768
     });
+    // this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg');
     this.echo('Screenshot taken');
+}
+
+var saveData = function(){
+    var fileName = 'love-' + new Date().getFullYear() + '.txt';
+    var data = {
+        'date' : new Date().toJSON(),
+        'likes' : numberOfLikes
+    };
+    fs.write(fileName, JSON.stringify(data) + '\n', 'a');
 }
 
 var postStatus = function(){
     this.echo('Total likes : ' + numberOfLikes + '...');
+    saveData();
     if( publishStatus && numberOfLikes > 0 ) {
         this.echo('Publish status: ' + numberOfLikes + status );
         this.click('textarea[name="xhpc_message"]');
@@ -56,8 +69,6 @@ var postStatus = function(){
 
         this.then(function(){
             this.click('form[action="/ajax/updatestatus.php"] button[type="submit"]');
-            this.echo('Clicked "submit"');
-            // this.wait(1000);
         });
 
         this.waitWhileVisible('form[action="/ajax/updatestatus.php"] button[type="submit"]', function(){
@@ -84,8 +95,9 @@ var doSomeLove = function () {
     if (nb > 0 && loop < maxLoop ){
         // Find all 'like' buttons, count them and mark them with a crafted id 
         this.then(function(){
-            // this.echo('Starting to doSomeLove');
+            console.log('Starting to doSomeLove');
             this.evaluate(function(){
+                console.log('Enter evaluate');
                 window.done = false;
                 $('a.UFILikeLink').each(function(){
                     if($(this).text() === 'Like'){
@@ -121,7 +133,9 @@ var doSomeLove = function () {
             if(nb >0){
                 this.repeat(nb, function(){
                     this.then(function(){
-                        this.wait(getRandomInt(1000, 10000), function(){
+                        var t = getRandomInt(1000, 10000);
+                        this.echo('Will click #like' + numberOfLikes + ' in ' + t/1000 + ' sec');
+                        this.wait( t , function(){
                             this.click('#like' + numberOfLikes);    
                             this.echo('Clicked #like' + numberOfLikes);
                             numberOfLikes++;
@@ -134,9 +148,8 @@ var doSomeLove = function () {
         });
         
         this.then(function(){
-            // this.scrollToBottom();
+            this.scrollToBottom();
             // this.click('div[id^="more_pager_pagelet"] a');
-            takeScreenshot.call(this);
         });
 
         this.then(function(){
