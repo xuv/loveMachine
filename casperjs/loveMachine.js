@@ -1,7 +1,7 @@
 var numberOfLikes = 0;
 var nb = 1;
 var loop = 0;
-var maxLoop = 25;
+var maxLoop = 25; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
