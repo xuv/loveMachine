@@ -1,5 +1,6 @@
 # \[loveMachine\] 
-\[loveMachine\] = an automatic Facebook like processor
+\[loveMachine\] **likes** everything your friends do on Facebook  
+http://lovemachine.cc
 
 ## Overview
 Basically, it will log into your Facebook account and click on "every" possible like link on your home news stream. Yes, that means the 'like' under every comments also. (It is not 100% accurate. Experience has shown that it might miss some. But it does the trick.)
