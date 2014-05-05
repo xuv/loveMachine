@@ -1,10 +1,15 @@
-var numberOfLikes = 0;
-var nb = 1;
+var numberOfPostLikes = 0;
+var numberOfCommentLikes = 0;
+var totalLikes = 0;
+var nbPL = 1;
+var nbCL = 1;
 var loop = 0;
-var maxLoop = 25; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
+var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
+var likePosts = false; // Does it have to like posts
+var likeComments = true; //Does it have to like comments
 
 // Retourne un entier aléatoire entre min et max
 function getRandomInt (min, max) {
@@ -15,7 +20,7 @@ var casper = require('casper').create({
     clientScripts: [
         'include/jquery-1.10.2.min.js'
     ],
-    logLevel: "info", // Only "info" level messages will be logged
+    logLevel: "debug", // Only "info" level messages will be logged
     verbose: false,
     viewportSize: {
         width: 1024,
@@ -46,24 +51,25 @@ var saveData = function(){
     var fileName = 'love-' + new Date().getFullYear() + '.txt';
     var data = {
         'date' : new Date().toJSON(),
-        'likes' : numberOfLikes
+        'likes' : totalLikes
     };
     fs.write(fileName, JSON.stringify(data) + '\n', 'a');
 }
 
 var postStatus = function(){
-    this.echo('Total likes : ' + numberOfLikes + '...');
+    totalLikes = numberOfPostLikes + numberOfCommentLikes;
+    this.echo('Total likes : ' + totalLikes + '...');
     saveData();
-    if( publishStatus && numberOfLikes > 0 ) {
-        this.echo('Publish status: ' + numberOfLikes + status );
+    if( publishStatus && totalLikes > 0 ) {
+        var messageToPost = totalLikes + status;
+        this.echo('Publish status: ' + messageToPost );
         this.click('textarea[name="xhpc_message"]');
         this.echo('Clicked status box');
 
         this.waitWhileSelector('textarea[class="DOMControl_placeholder"]', function() {
             this.echo('Writting status');
-            status = numberOfLikes + status;
             this.fill('form[action="/ajax/updatestatus.php"]', {
-                'xhpc_message_text' : status
+                'xhpc_message_text' : messageToPost
             }, false);
         });
 
@@ -88,7 +94,8 @@ var doSomeLove = function () {
     if( init ){
         // this.echo('Init...');
         this.evaluate(function(){
-            window.nbLikes = 0;    
+            window.nbLikes = 0; 
+            window.nbCommentLikes = 0;   
         });
         init = false;
     } 
@@ -102,9 +109,16 @@ var doSomeLove = function () {
                 $('a.UFILikeLink').each(function(){
                     if($(this).text() === 'Like'){
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-                            $(this).attr('id', 'like' + window.nbLikes );
-                            console.log('Creating id="#like' + window.nbLikes + '"' );
-                            window.nbLikes++;
+                            if ( $(this).attr('title') === 'Like this' ){
+                                $(this).attr('id', 'like' + window.nbLikes );
+                                console.log('Creating id="#like' + window.nbLikes + '"' );
+                                window.nbLikes++;    
+                            }
+                            if ( $(this).attr('title') === 'Like this comment' ){
+                                $(this).attr('id', 'commentLike' + window.nbCommentLikes );
+                                console.log('Creating id="#commentLike' + window.nbCommentLikes + '"' );
+                                window.nbCommentLikes++;    
+                            }
                         } else {
                             console.log('Already has an ID: ' + $(this).attr('id') );
                         }
@@ -122,28 +136,54 @@ var doSomeLove = function () {
 
         this.then(function(){
             // Get the number of Likes to process
-            nb = this.evaluate(function(){
-                return window.nbLikes;
-            }) - numberOfLikes;
+            if (likePosts) {
+                nbPL = this.evaluate(function(){
+                    return window.nbLikes;
+                }) - numberOfPostLikes;
+            }
 
-            this.echo('Wave #' + loop + ' of likes (nb) : ' + nb);
+            if (likeComments){
+                nbCL = this.evaluate(function(){
+                    return window.nbCommentLikes;
+                }) - numberOfCommentLikes;
+            }
+
+            this.echo('Wave #' + loop + ' of likes (nbPL) : ' + nbPL + ' (nbCL) : ' + nbCL );
         });
 
         this.then(function(){
-            if(nb >0){
+            if(likePosts && nbPL >0){
                 this.repeat(nb, function(){
                     this.then(function(){
                         var t = getRandomInt(1000, 10000);
-                        this.echo('Will click #like' + numberOfLikes + ' in ' + t/1000 + ' sec');
+                        this.echo('Will click #like' + numberOfPostLikes + ' in ' + t/1000 + ' sec');
                         this.wait( t , function(){
-                            this.click('#like' + numberOfLikes);    
-                            this.echo('Clicked #like' + numberOfLikes);
-                            numberOfLikes++;
+                            this.click('#like' + numberOfPostLikes);    
+                            this.echo('Clicked #like' + numberOfPostLikes);
+                            numberOfPostLikes++;
                         });
                     });
                 });    
             } else {
-                this.echo('No looping click');
+                this.echo('No looping click on posts');
+            }    
+        });
+
+        this.then(function(){
+            if(likeComments && nbCL >0){
+                this.repeat(nb, function(){
+                    this.then(function(){
+                        var t = getRandomInt(1000, 10000);
+                        this.echo('Will click #commentLike' + numberOfCommentLikes + ' in ' + t/1000 + ' sec');
+                        this.wait( t , function(){
+                            this.click('#commentLike' + numberOfCommentLikes);    
+                            this.echo('Clicked #commentLike' + numberOfCommentLikes);
+                            numberOfCommentLikes++;
+                        });
+                    });
+                });    
+            } else {
+                this.echo('No looping click on comments');
             }    
         });
         
