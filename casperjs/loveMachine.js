@@ -4,11 +4,11 @@ var totalLikes = 0;
 var nbPL = 1;
 var nbCL = 1;
 var loop = 0;
-var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
+var maxLoop = 5; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
-var likePosts = false; // Does it have to like posts
+var likePosts = true; // Does it have to like posts
 var likeComments = true; //Does it have to like comments
 
 // Retourne un entier aléatoire entre min et max
@@ -51,12 +51,21 @@ var saveData = function(){
     var fileName = 'love-' + new Date().getFullYear() + '.txt';
     var data = {
         'date' : new Date().toJSON(),
-        'likes' : totalLikes
+        'likes' : totalLikes,
+        'posts' : numberOfPostLikes,
+        'comments' : numberOfCommentLikes
     };
     fs.write(fileName, JSON.stringify(data) + '\n', 'a');
 }
 
 var postStatus = function(){
+    if ( !likePosts ){
+        numberOfPostLikes--;    
+    }
+    if ( !likeComments ) {
+        numberOfCommentLikes--;
+    }
+    // total
     totalLikes = numberOfPostLikes + numberOfCommentLikes;
     this.echo('Total likes : ' + totalLikes + '...');
     saveData();
@@ -94,12 +103,12 @@ var doSomeLove = function () {
     if( init ){
         // this.echo('Init...');
         this.evaluate(function(){
-            window.nbLikes = 0; 
+            window.nbPostLikes = 0; 
             window.nbCommentLikes = 0;   
         });
         init = false;
     } 
-    if (nb > 0 && loop < maxLoop ){
+    if ( (nbPL >0 || nbCL > 0) && loop < maxLoop ){
         // Find all 'like' buttons, count them and mark them with a crafted id 
         this.then(function(){
             console.log('Starting to doSomeLove');
@@ -110,9 +119,9 @@ var doSomeLove = function () {
                     if($(this).text() === 'Like'){
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
                             if ( $(this).attr('title') === 'Like this' ){
-                                $(this).attr('id', 'like' + window.nbLikes );
-                                console.log('Creating id="#like' + window.nbLikes + '"' );
-                                window.nbLikes++;    
+                                $(this).attr('id', 'like' + window.nbPostLikes );
+                                console.log('Creating id="#like' + window.nbPostLikes + '"' );
+                                window.nbPostLikes++;    
                             }
                             if ( $(this).attr('title') === 'Like this comment' ){
                                 $(this).attr('id', 'commentLike' + window.nbCommentLikes );
@@ -138,14 +147,18 @@ var doSomeLove = function () {
             // Get the number of Likes to process
             if (likePosts) {
                 nbPL = this.evaluate(function(){
-                    return window.nbLikes;
+                    return window.nbPostLikes;
                 }) - numberOfPostLikes;
+            } else {
+                nbPL = 0;
             }
 
             if (likeComments){
                 nbCL = this.evaluate(function(){
                     return window.nbCommentLikes;
                 }) - numberOfCommentLikes;
+            } else {
+                nbCL = 0;
             }
 
             this.echo('Wave #' + loop + ' of likes (nbPL) : ' + nbPL + ' (nbCL) : ' + nbCL );
@@ -153,16 +166,32 @@ var doSomeLove = function () {
 
         this.then(function(){
             if(likePosts && nbPL >0){
-                this.repeat(nb, function(){
-                    this.then(function(){
-                        var t = getRandomInt(1000, 10000);
-                        this.echo('Will click #like' + numberOfPostLikes + ' in ' + t/1000 + ' sec');
-                        this.wait( t , function(){
-                            this.click('#like' + numberOfPostLikes);    
-                            this.echo('Clicked #like' + numberOfPostLikes);
-                            numberOfPostLikes++;
+                this.repeat(nbPL, function(){
+                    if (likePosts ){
+                        this.then(function(){
+                            var t = getRandomInt(1000, 10000);
+                            this.echo('Will click #like' + numberOfPostLikes + ' in ' + t/1000 + ' sec');
+                            this.wait( t , function(){
+                                this.click('#like' + numberOfPostLikes);    
+                                this.echo('Clicked #like' + numberOfPostLikes);
+                                numberOfPostLikes++;
+                            });
+                            this.waitForSelector(
+                                '.block_dialog', 
+                                function() {
+                                    likePosts = false;
+                                    // this.captureSelector('block.png', '.block_dialog');
+                                    this.echo('BLOCKED FROM LIKING');
+                                    this.click('.uiLayer .layerCancel span');
+                                    this.click('.block_dialog input[name="close"]');
+                                },
+                                function() {
+                                    this.echo('keep licking');
+                                },
+                                2000
+                            );
                         });
-                    });
+                    }
                 });    
             } else {
                 this.echo('No looping click on posts');
@@ -171,7 +200,7 @@ var doSomeLove = function () {
 
         this.then(function(){
             if(likeComments && nbCL >0){
-                this.repeat(nb, function(){
+                this.repeat(nbCL, function(){
                     this.then(function(){
                         var t = getRandomInt(1000, 10000);
                         this.echo('Will click #commentLike' + numberOfCommentLikes + ' in ' + t/1000 + ' sec');
@@ -188,8 +217,13 @@ var doSomeLove = function () {
         });
         
         this.then(function(){
-            this.scrollToBottom();
-            // this.click('div[id^="more_pager_pagelet"] a');
+            //this.scrollToBottom();
+            this.click('div[id^="more_pager_pagelet"] a');
+            this.echo('Clicked for more (scroll bottom)');
+        });
+
+        this.wait(3000, function(){
+            this.echo('waiting done');
         });
 
         this.then(function(){
