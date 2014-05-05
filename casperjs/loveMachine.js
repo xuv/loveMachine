@@ -187,7 +187,17 @@ var doSomeLove = function () {
                                     });
                                     // this.captureSelector('block.png', '.block_dialog');
                                     this.echo('BLOCKED FROM LIKING');
-                                    this.click('.uiLayer .layerCancel span');
+                                    this.waitForSelector(
+                                        '.uiLayer .layerCancel span',
+                                        function() {
+                                            this.click('.uiLayer .layerCancel span');
+                                            this.echo('CLOSED -> .uiLayer .layerCancel span')
+                                        },
+                                        function() {
+                                            this.echo('NO BUTTON -> .uiLayer .layerCancel span')
+                                        },
+                                        1000
+                                    );
                                     this.click('.block_dialog input[name="close"]');
                                 },
                                 function() {
