@@ -4,7 +4,7 @@ var totalLikes = 0;
 var nbPL = 1;
 var nbCL = 1;
 var loop = 0;
-var maxLoop = 5; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
+var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
@@ -103,11 +103,13 @@ var doSomeLove = function () {
     if( init ){
         // this.echo('Init...');
         this.evaluate(function(){
+            window.likePosts = true;
+            window.likeComments = true;
             window.nbPostLikes = 0; 
             window.nbCommentLikes = 0;   
         });
         init = false;
-    } 
+    }
     if ( (nbPL >0 || nbCL > 0) && loop < maxLoop ){
         // Find all 'like' buttons, count them and mark them with a crafted id 
         this.then(function(){
@@ -118,12 +120,12 @@ var doSomeLove = function () {
                 $('a.UFILikeLink').each(function(){
                     if($(this).text() === 'Like'){
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-                            if ( $(this).attr('title') === 'Like this' ){
+                            if ( window.likePosts && $(this).attr('title') === 'Like this' ){
                                 $(this).attr('id', 'like' + window.nbPostLikes );
                                 console.log('Creating id="#like' + window.nbPostLikes + '"' );
                                 window.nbPostLikes++;    
                             }
-                            if ( $(this).attr('title') === 'Like this comment' ){
+                            if ( window.likeComments && $(this).attr('title') === 'Like this comment' ){
                                 $(this).attr('id', 'commentLike' + window.nbCommentLikes );
                                 console.log('Creating id="#commentLike' + window.nbCommentLikes + '"' );
                                 window.nbCommentLikes++;    
@@ -180,13 +182,16 @@ var doSomeLove = function () {
                                 '.block_dialog', 
                                 function() {
                                     likePosts = false;
+                                    this.evaluate(function(){
+                                        window.likePosts = false;
+                                    });
                                     // this.captureSelector('block.png', '.block_dialog');
                                     this.echo('BLOCKED FROM LIKING');
                                     this.click('.uiLayer .layerCancel span');
                                     this.click('.block_dialog input[name="close"]');
                                 },
                                 function() {
-                                    this.echo('keep licking');
+                                    this.echo('keep liking');
                                 },
                                 2000
                             );
@@ -206,6 +211,7 @@ var doSomeLove = function () {
                         this.echo('Will click #commentLike' + numberOfCommentLikes + ' in ' + t/1000 + ' sec');
                         this.wait( t , function(){
                             this.click('#commentLike' + numberOfCommentLikes);    
+                            this.captureSelector('commentLike' + numberOfCommentLikes + '.png', '#commentLike' + numberOfCommentLikes);
                             this.echo('Clicked #commentLike' + numberOfCommentLikes);
                             numberOfCommentLikes++;
                         });
