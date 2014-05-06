@@ -221,7 +221,7 @@ var doSomeLove = function () {
                         this.echo('Will click #commentLike' + numberOfCommentLikes + ' in ' + t/1000 + ' sec');
                         this.wait( t , function(){
                             this.click('#commentLike' + numberOfCommentLikes);    
-                            this.captureSelector('commentLike' + numberOfCommentLikes + '.png', '#commentLike' + numberOfCommentLikes);
+                            // this.captureSelector('commentLike' + numberOfCommentLikes + '.png', '#commentLike' + numberOfCommentLikes);
                             this.echo('Clicked #commentLike' + numberOfCommentLikes);
                             numberOfCommentLikes++;
                         });
@@ -233,8 +233,12 @@ var doSomeLove = function () {
         });
         
         this.then(function(){
-            //this.scrollToBottom();
-            this.click('div[id^="more_pager_pagelet"] a');
+            /* Weird but works better like this */
+            if ( likePosts ) {
+                this.scrollToBottom();    
+            } else {
+                this.click('div[id^="more_pager_pagelet"] a');
+            }
             this.echo('Clicked for more (scroll bottom)');
         });
 
