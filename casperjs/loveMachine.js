@@ -242,7 +242,7 @@ var doSomeLove = function () {
             this.echo('Clicked for more (scroll bottom)');
         });
 
-        this.wait(3000, function(){
+        this.wait(8000, function(){
             this.echo('waiting done');
         });
 
