@@ -1,3 +1,15 @@
+/* ********************************************************************************************************** *\
+ * loveMachine                                                                                                *
+ * ---------------------------------------------------------------------------------------------------------- *
+ * Tag(s):      #lvMchn, #loveMachine                                                                         *
+ * Author:      Julien Deswaef                                                                                *
+ * Url:         http://loveMachine.cc
+ * ---------------------------------------------------------------------------------------------------------- *
+ * Copyleft:                                                                                                  *
+ *     This is a free work, you can copy, distribute, and modify it under the terms of the Free Art License   *
+ *     http://artlibre.org/licence/lal/en/                                                                    *
+\* ********************************************************************************************************** */
+
 var numberOfPostLikes = 0;
 var numberOfCommentLikes = 0;
 var totalLikes = 0;
