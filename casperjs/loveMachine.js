@@ -23,6 +23,7 @@ var publishStatus = false;
 var likePosts = true; // Does it have to like posts
 var likeComments = true; //Does it have to like comments
 var screenCapture = false; // Does it have to take a screenshot at the end.
+var startTime = new Date().toJSON();
 
 // Returns a random integer between min and max
 function getRandomInt (min, max) {
@@ -65,7 +66,8 @@ var takeScreenshot = function(){
 var saveData = function(){
     var fileName = 'love-' + new Date().getFullYear() + '.txt';
     var data = {
-        'date' : new Date().toJSON(),
+		'start': startTime,
+        'end' : new Date().toJSON(),
         'likes' : totalLikes,
         'posts' : numberOfPostLikes,
         'comments' : numberOfCommentLikes
@@ -125,7 +127,7 @@ var doSomeLove = function () {
         });
         init = false;
     }
-    if ( (nbPL >0 || nbCL > 0) && loop < maxLoop ){
+    if ( (nbPL >0 || nbCL > 0) && loop < maxLoop && numberOfPostLikes <= 200 ){
         // Find all 'like' buttons, count them and mark them with a crafted id
         this.then(function(){
             console.log('Starting to doSomeLove');
