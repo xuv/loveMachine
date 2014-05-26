@@ -17,6 +17,7 @@ var nbPL = 1;
 var nbCL = 1;
 var loop = 0;
 var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
+var maxLikes = 100; // It seems Facebook has a new limit of likes on post over a period of time
 var status = ' (y)';
 var init = true;
 var publishStatus = false;
@@ -127,7 +128,7 @@ var doSomeLove = function () {
         });
         init = false;
     }
-    if ( (nbPL >0 || nbCL > 0) && loop < maxLoop && numberOfPostLikes <= 200 ){
+    if ( (nbPL >0 || nbCL > 0) && loop < maxLoop && numberOfPostLikes <= maxLikes ){
         // Find all 'like' buttons, count them and mark them with a crafted id
         this.then(function(){
             console.log('Starting to doSomeLove');
