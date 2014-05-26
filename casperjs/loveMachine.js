@@ -254,10 +254,14 @@ var doSomeLove = function () {
             /* Weird but works better like this */
             if ( likePosts ) {
                 this.scrollToBottom();
+                this.echo('Scroll to bottom');
+            } else if ( this.exists('div[id^="more_pager_pagelet"] a') ){
+				this.click('div[id^="more_pager_pagelet"] a');
+				this.echo('Click for more pagelet');
             } else {
-                this.click('div[id^="more_pager_pagelet"] a');
-            }
-            this.echo('Clicked for more (scroll bottom)');
+				this.echo('No more scroll possible');
+			}
+
         });
 
         this.wait(8000, function(){
