@@ -11,6 +11,8 @@ Since most of my fb_friends feel flattered, empowered, loved,... when they recei
 ## Usage
 `casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password>`
 
+If that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.
+
 ## History
 This project has started a couple years ago and was first done in Python using Selenium Webdriver with the intention of working as a standalone server application. But for some reason, it never reached that stage because having a chromeless firefox behaving like a desktop one with selenium on top of it, was something I could not achieve. 
 
@@ -21,6 +23,7 @@ casperjs, phantomjs and a facebook account
 
 ## Notes
 All project notes are available there for now: <http://w.xuv.be/projects/love_machine>
+
 *Running install.bat will download and install phantomjs and casperjs to current directory, if you don't already have them on your machine.
 
 ## Feedback
