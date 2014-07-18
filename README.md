@@ -21,6 +21,7 @@ casperjs, phantomjs and a facebook account
 
 ## Notes
 All project notes are available there for now: <http://w.xuv.be/projects/love_machine>
+*Running install.bat will download and install phantomjs and casperjs to current directory, if you don't already have them on your machine.
 
 ## Feedback
 If you are interested in this application or have been testing it, please contact the author by email: juego [at] requiem4tv [dot] com
