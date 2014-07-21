@@ -1,12 +1,4 @@
-/* 
-
-Yo Julien sweet script you got here. It defiantly inspired me to jump out of my realm of game design and get my feet wet in some web bots. I am going to work on a bot called the poke bomb that logs onto Facebook and pokes every friend you have.
-
-I have no idea what I’m doing But i attempted to fix the like machine and was somewhat successful.
-So the comments don’t work, But the concept is there and the likes stay. The comments could be figured out pretty easy. 
-
- Also if for some reason the mobile version of the site stops working the non javascript mobile version of Facebook will work for sure, I have no idea how to force no javascript and do that. 
-********************************************************************************************************** *\
+/* ********************************************************************************************************** *\
  * loveMachine                                                                                                *
  * ---------------------------------------------------------------------------------------------------------- *
  * Tag(s):      #lvMchn, #loveMachine                                                                         *
@@ -18,22 +10,31 @@ So the comments don’t work, But the concept is there and the likes stay. The c
  *     http://artlibre.org/licence/lal/en/                                                                    *
 \* ********************************************************************************************************** */
 
+// *** Global settings ***
+// You can change some stuff here if you want. But at your own risk.
+var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
+var maxLikes = 100; // It seems Facebook has a new limit of likes on post over a period of time
+var likePosts = true; 		// Does it have to like posts?
+var likeComments = false; 	// Does it have to like comments?
+var screenCapture = true; 	// Does it have to take a screenshot whin done?
+var publishStatus = false; 	// Does it have to publish a status update when done?
+var status = ' (y)'; 		// Message that will be appended to the status update.
+
+// Global variables used through the out script. 
+// Should not be modified unless you want to break the script.
 var numberOfPostLikes = 0;
 var numberOfCommentLikes = 0;
 var totalLikes = 0;
 var nbPL = 1;
 var nbCL = 1;
 var loop = 0;
-var maxLoop = 15; // 25 seems to be a limit. Beyond that, FB starts throwing warnings.
-var maxLikes = 100; // It seems Facebook has a new limit of likes on post over a period of time
-var status = ' (y)';
 var init = true;
-var publishStatus = false;
-var likePosts = true; // Does it have to like posts
-var likeComments = true; //Does it have to like comments
-var screenCapture = false; // Does it have to take a screenshot at the end.
 var startTime = new Date().toJSON();
+var windowWidth = 1024;
+var windowHeight = 768;
 
+
+// *** Global functions ***
 // Returns a random integer between min and max
 function getRandomInt (min, max) {
     return Math.floor(Math.random() * (max - min) + min);
@@ -46,8 +47,8 @@ var casper = require('casper').create({
     logLevel: "info", // "debug" or "info" level messages will be logged
     verbose: false,
     viewportSize: {
-        width: 1024,
-        height: 768
+        width: windowWidth,
+        height: windowHeight
     },
     waitTimeout: 10000
 });
@@ -56,22 +57,24 @@ var fs = require('fs');
 
 // Catch console messages from the browser
 casper.on('remote.message', function(msg) {
-    this.echo('browser console: ' + msg);
+    this.echo('Browser console: ' + msg);
 });
 
+// Saving a screenshot
 var takeScreenshot = function(){
     if ( screenCapture ) {
         this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg', {
             top: 0,
             left: 0,
-            width: 1024,
-            height: 768
+            width: windowWidth,
+            height: windowHeight
         });
         // this.capture('fb' + (new Date()).toISOString().substr(0,19).replace(/:/g, '') + '.jpg');
         this.echo('Screenshot taken');
     }
 }
 
+// Write some logs to a textfile. Just for statistical purposes.
 var saveData = function(){
     var fileName = 'love-' + new Date().getFullYear() + '.txt';
     var data = {
@@ -84,6 +87,7 @@ var saveData = function(){
     fs.write(fileName, JSON.stringify(data) + '\n', 'a');
 }
 
+// Steps to post a status update
 var postStatus = function(){
     if ( !likePosts ){
         numberOfPostLikes--;
@@ -143,16 +147,14 @@ var doSomeLove = function () {
             this.evaluate(function(){
                 console.log('Enter evaluate');
                 window.done = false;
-//calling th mobile Facebook               
- $('a.touchable.like_def').each(function(){
+				
+				$('a.touchable.like_def').each(function(){
    
                     if($(this).text() === 'Like'){
 
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-//ok i think this is working now. The double text thing seems 
-// redundant but idk
- if ( $(this).text() === 'Like' && window.likePosts){ 
-
+							// If element doesn't have class "selected", which means it's already clicked
+							if ( !$(this).children('strong').hasClass('selected') && window.likePosts){ 
                                 $(this).attr('id', 'like' + window.nbPostLikes );
                                 console.log('Creating id="#like' + window.nbPostLikes + '"' );
                                 window.nbPostLikes++;
@@ -267,7 +269,11 @@ var doSomeLove = function () {
         this.then(function(){
             /* Weird but works better like this */
             if ( likePosts ) {
-                this.scrollToBottom();
+                // this.scrollToBottom();
+                this.evaluate(function() {
+					// Scrolls to the bottom of page
+					window.document.body.scrollTop = document.body.scrollHeight;
+				});
                 this.echo('Scroll to bottom');
             } else if ( this.exists('div[id^="more_pager_pagelet"] a') ){
 				this.click('div[id^="more_pager_pagelet"] a');
@@ -278,7 +284,7 @@ var doSomeLove = function () {
 
         });
 
-        this.wait(8000, function(){
+        this.wait(10000, function(){
             this.echo('waiting done');
         });
 
@@ -298,7 +304,6 @@ var doSomeLove = function () {
 }
 
 // Start
-//mobile facebook
 casper.start('https://m.facebook.com', function() {
     casper.then(function(){
         // Check if login and password have been supplied
@@ -318,8 +323,9 @@ casper.then(function(){
     }, true);
 });
 
-// Wait for the login page to disappear and land on the homepage
+// Wait for the login page to disappear.
 casper.waitWhileSelector('form#login_form', doSomeLove, function(){
+	takeScreenshot.call(this);
     this.echo('Never reached homepage. Quitting.').exit();
 });
 
