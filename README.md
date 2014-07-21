@@ -11,15 +11,17 @@ Since most of my fb_friends feel flattered, empowered, loved,... when they recei
 ## Usage
 `casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password>`
 
-### On Windows
-If that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.
+(On Windows, if that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.)
 
 ## History
 This project has started a couple years ago and was first done in Python using Selenium Webdriver with the intention of working as a standalone server application. But for some reason, it never reached that stage because having a chromeless firefox behaving like a desktop one with selenium on top of it, was something I could not achieve. 
 
 So earlier 2013, the project was rewritten in javascript using phantomjs and casperjs and this somehow was much more easier.
 
-July 2014, a first [pull request](#2) by @lianna5, provides a .bat script for easier installation on Windows.
+### July 2014
+
+ * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anne Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
+ * [Andrew Nakas](https://github.com/andrewnakas) came with the idea to use the mobile verison of Facebook as a fix for the problem of the "regular" Facebook removing "likes" on posts a minute after they been clicked by the [loveMachine]. 
 
 ## Requirements
 casperjs, phantomjs and a facebook account
