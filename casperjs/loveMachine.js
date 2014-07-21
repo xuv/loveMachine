@@ -1,6 +1,11 @@
 /* 
 
+Yo Julien sweet script you got here. It defiantly inspired me to jump out of my realm of game design and get my feet wet in some web bots. I am going to work on a bot called the poke bomb that logs onto Facebook and pokes every friend you have.
 
+I have no idea what I’m doing But i attempted to fix the like machine and was somewhat successful.
+So the comments don’t work, But the concept is there and the likes stay. The comments could be figured out pretty easy. 
+
+ Also if for some reason the mobile version of the site stops working the non javascript mobile version of Facebook will work for sure, I have no idea how to force no javascript and do that. 
 ********************************************************************************************************** *\
  * loveMachine                                                                                                *
  * ---------------------------------------------------------------------------------------------------------- *
@@ -144,10 +149,10 @@ var doSomeLove = function () {
                     if($(this).text() === 'Like'){
 
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-//i suspect that taking out the title part is what makes it un-efficient. tying to put an 
-//attribute in would cause it to parse error. I figure you know what to do……                           
- if ( window.likePosts ){ 
- console.log('oSomeLove');
+//ok i think this is working now. The double text thing seems 
+// redundant but idk
+ if ( $(this).text() === 'Like' && window.likePosts){ 
+
                                 $(this).attr('id', 'like' + window.nbPostLikes );
                                 console.log('Creating id="#like' + window.nbPostLikes + '"' );
                                 window.nbPostLikes++;
