@@ -1,12 +1,6 @@
 /* 
 
-Yo Julien sweet script you got here. It defiantly inspired me to jump out of my realm of game design and get my feet wet in 
-some web bots. I am going to work on a bot called the poke bomb that logs onto Facebook and pokes every friend you have.
 
-I have no idea what I’m doing But i attempted to fix the like machine and was somewhat successful. The likes don’t go away,
-the problem is it isn’t efficient due to some code one part of the code i deleted in dosomelove.
-So it only works 25% of the time and comments don’t work, But the concept is there and the likes stay.
-Also if for some reason the mobile version of the site stops working the non javascript mobile version of Facebook will work for sure, I have no idea how to force no javascript and do that. 
 ********************************************************************************************************** *\
  * loveMachine                                                                                                *
  * ---------------------------------------------------------------------------------------------------------- *
