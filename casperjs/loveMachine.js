@@ -1,4 +1,12 @@
-/* ********************************************************************************************************** *\
+/* 
+
+Yo Julien sweet script you got here. It defiantly inspired me to jump out of my realm of game design and get my feet wet in some web bots. I am going to work on a bot called the poke bomb that logs onto Facebook and pokes every friend you have.
+
+I have no idea what I’m doing But i attempted to fix the like machine and was somewhat successful.
+So the comments don’t work, But the concept is there and the likes stay. The comments could be figured out pretty easy. 
+
+ Also if for some reason the mobile version of the site stops working the non javascript mobile version of Facebook will work for sure, I have no idea how to force no javascript and do that. 
+********************************************************************************************************** *\
  * loveMachine                                                                                                *
  * ---------------------------------------------------------------------------------------------------------- *
  * Tag(s):      #lvMchn, #loveMachine                                                                         *
@@ -135,10 +143,16 @@ var doSomeLove = function () {
             this.evaluate(function(){
                 console.log('Enter evaluate');
                 window.done = false;
-                $('a.UFILikeLink').each(function(){
+//calling th mobile Facebook               
+ $('a.touchable.like_def').each(function(){
+   
                     if($(this).text() === 'Like'){
+
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-                            if ( window.likePosts && $(this).attr('title') === 'Like this' ){
+//ok i think this is working now. The double text thing seems 
+// redundant but idk
+ if ( $(this).text() === 'Like' && window.likePosts){ 
+
                                 $(this).attr('id', 'like' + window.nbPostLikes );
                                 console.log('Creating id="#like' + window.nbPostLikes + '"' );
                                 window.nbPostLikes++;
@@ -284,7 +298,8 @@ var doSomeLove = function () {
 }
 
 // Start
-casper.start('https://facebook.com', function() {
+//mobile facebook
+casper.start('https://m.facebook.com', function() {
     casper.then(function(){
         // Check if login and password have been supplied
         if( casper.cli.get('email') === undefined || casper.cli.get('password') == undefined ) {
