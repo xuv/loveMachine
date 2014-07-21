@@ -21,7 +21,7 @@ So earlier 2013, the project was rewritten in javascript using phantomjs and cas
 ### July 2014
 
  * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anne Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
- * [Andrew Nakas](https://github.com/andrewnakas) came with the idea to use the mobile verison of Facebook as a fix for the problem of the "regular" Facebook removing "likes" on posts a minute after they been clicked by the [loveMachine]. 
+ * [Andrew Nakas](https://github.com/andrewnakas) came with the idea to use the mobile verison of Facebook as a fix for the problem of the "regular" Facebook removing "likes" on posts a minute after they been clicked by the \[loveMachine\]. 
 
 ## Requirements
 casperjs, phantomjs and a facebook account
@@ -35,4 +35,4 @@ Running install.bat will download and install phantomjs and casperjs to current 
 All project notes are available there for now: <http://w.xuv.be/projects/love_machine>
 
 ## Feedback
-If you are interested in this application or have been testing it, please contact the author by email: juego [at] requiem4tv [dot] com
+If you are interested in this application or have been testing it, please contact the author by email: juego \[at\] requiem4tv \[dot\] com
