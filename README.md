@@ -11,6 +11,7 @@ Since most of my fb_friends feel flattered, empowered, loved,... when they recei
 ## Usage
 `casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password>`
 
+### On Windows
 If that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.
 
 ## History
@@ -18,13 +19,18 @@ This project has started a couple years ago and was first done in Python using S
 
 So earlier 2013, the project was rewritten in javascript using phantomjs and casperjs and this somehow was much more easier.
 
+July 2014, a first [pull request](#2) by @lianna5, provides a .bat script for easier installation on Windows.
+
 ## Requirements
 casperjs, phantomjs and a facebook account
 
+## Installation
+
+### Windows
+Running install.bat will download and install phantomjs and casperjs to current directory, if you don't already have them on your machine.
+
 ## Notes
 All project notes are available there for now: <http://w.xuv.be/projects/love_machine>
-
-*Running install.bat will download and install phantomjs and casperjs to current directory, if you don't already have them on your machine.
 
 ## Feedback
 If you are interested in this application or have been testing it, please contact the author by email: juego [at] requiem4tv [dot] com
