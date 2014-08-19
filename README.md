@@ -12,6 +12,7 @@ Since most of my fb_friends feel flattered, empowered, loved,... when they recei
 `casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password> --strictmode=<true or false>` 
 
 (On Windows, if that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.)
+
 strictmode: if strictmode is set to true, the machine will not like game posts.
 
 ## History
@@ -21,7 +22,7 @@ So earlier 2013, the project was rewritten in javascript using phantomjs and cas
 
 ### July 2014
 
- * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anne Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
+ * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anna Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
  * [Andrew Nakas](https://github.com/andrewnakas) came with the idea to use the mobile verison of Facebook as a fix for the problem of the "regular" Facebook removing "likes" on posts a minute after they been clicked by the \[loveMachine\]. 
 
 ## Requirements
