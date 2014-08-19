@@ -155,9 +155,17 @@ var doSomeLove = function () {
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
 							// If element doesn't have class "selected", which means it's already clicked
 							if ( !$(this).children('strong').hasClass('selected') && window.likePosts){ 
-                                $(this).attr('id', 'like' + window.nbPostLikes );
-                                console.log('Creating id="#like' + window.nbPostLikes + '"' );
-                                window.nbPostLikes++;
+															var isApp;
+								var footer = $(this).parents("footer")
+								var body = footer.prevUntil("header");
+								var a = body.find("a");
+								var isApp = (a.attr('href').indexOf("apps.facebook.com") > -1);
+								if (!isApp){
+									$(this).attr('id', 'like' + window.nbPostLikes );
+									$(this).attr('id', 'like' + window.nbPostLikes );
+									console.log('Creating id="#like' + window.nbPostLikes + '"' );
+									window.nbPostLikes++;
+								}
                             }
                             if ( window.likeComments && $(this).attr('title') === 'Like this comment' ){
                                 $(this).attr('id', 'commentLike' + window.nbCommentLikes );
