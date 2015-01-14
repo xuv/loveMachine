@@ -317,14 +317,14 @@ casper.start('https://m.facebook.com', function() {
 // Log into Facebook
 casper.then(function(){
     this.echo('Filling the login form');
-    this.fill('form#login_form', {
+    this.fill('form.mobile-login-form', {
         'email': casper.cli.get('email'),
         'pass': casper.cli.get('password')
     }, true);
 });
 
 // Wait for the login page to disappear.
-casper.waitWhileSelector('form#login_form', doSomeLove, function(){
+casper.waitWhileSelector('form.mobile-login-form', doSomeLove, function(){
 	takeScreenshot.call(this);
     this.echo('Never reached homepage. Quitting.').exit();
 });
