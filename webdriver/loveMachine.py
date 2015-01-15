@@ -153,8 +153,8 @@ if len(sys.argv) == 1 :
 	FIREFOX = True
 	
 elif len(sys.argv) >= 3 : 
-	LOGIN = sys.argv[-2:-1]
-	PASSWORD = sys.argv[-1:][0]
+	LOGIN = sys.argv[-3:-2]
+	PASSWORD = sys.argv[-2:][-1]
 	options = sys.argv[1:-2]
 	
 	for i in range(len(options)):

@@ -132,12 +132,14 @@ var postStatus = function(){
 var doSomeLove = function () {
     if( init ){
         // this.echo('Init...');
-        this.evaluate(function(){
+        this.evaluate(function(strictMode){
             window.likePosts = true;
             window.likeComments = true;
             window.nbPostLikes = 0;
             window.nbCommentLikes = 0;
-        });
+			window.strictMode = strictMode;
+        },
+		casper.cli.get('strictmode'));
         init = false;
     }
     if ( (nbPL >0 || nbCL > 0) && loop < maxLoop && numberOfPostLikes <= maxLikes ){
@@ -153,11 +155,17 @@ var doSomeLove = function () {
                     if($(this).text() === 'Like'){
 
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
-							// If element doesn't have class "selected", which means it's already clicked
-							if ( !$(this).children('strong').hasClass('selected') && window.likePosts){ 
-                                $(this).attr('id', 'like' + window.nbPostLikes );
-                                console.log('Creating id="#like' + window.nbPostLikes + '"' );
-                                window.nbPostLikes++;
+            		        // If element doesn't have class "selected", which means it's already clicked
+                            if ( !$(this).children('strong').hasClass('selected') && window.likePosts){ 
+                        	    var footer = $(this).parents("footer")
+                            	var body = footer.prevUntil("header");
+                        	    var a = body.find("a");
+                        	    var isApp = (a.attr('href').indexOf("apps.facebook.com") > -1);
+                        	    if (!(isApp && window.strictMode)){
+                        	        $(this).attr('id', 'like' + window.nbPostLikes );
+                        	        console.log('Creating id="#like' + window.nbPostLikes + '"' );
+                        	        window.nbPostLikes++;
+							    }
                             }
                             if ( window.likeComments && $(this).attr('title') === 'Like this comment' ){
                                 $(this).attr('id', 'commentLike' + window.nbCommentLikes );

@@ -9,9 +9,11 @@ Basically, it will log into your Facebook account and click on "every" possible 
 Since most of my fb_friends feel flattered, empowered, loved,... when they receive a 'like' for their actions on facebook, I thought I might automate some love giving and distribute 'likes' to my friends in a more efficient way. Or have I just created the first like-spamming application?
 
 ## Usage
-`casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password>`
+`casperjs lovemachine.js --email=<the-email-you-use-for-fb-login> --password=<your-facebook-password> --strictmode=<true or false>` 
 
 (On Windows, if that doesn't work, you may want to change 'casperjs' to casperjs_directory\casperjs.)
+
+strictmode: if strictmode is set to true, the machine will not like game posts.
 
 ## History
 This project has started a couple years ago and was first done in Python using Selenium Webdriver with the intention of working as a standalone server application. But for some reason, it never reached that stage because having a chromeless firefox behaving like a desktop one with selenium on top of it, was something I could not achieve. 
@@ -20,7 +22,7 @@ So earlier 2013, the project was rewritten in javascript using phantomjs and cas
 
 ### July 2014
 
- * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anne Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
+ * A first [pull request](https://github.com/xuv/loveMachine/pull/2) by [Anna Li](https://github.com/lianna5), provides a .bat script for easier installation on Windows.
  * [Andrew Nakas](https://github.com/andrewnakas) came with the idea to use the mobile verison of Facebook as a fix for the problem of the "regular" Facebook removing "likes" on posts a minute after they been clicked by the \[loveMachine\]. 
 
 ## Requirements
