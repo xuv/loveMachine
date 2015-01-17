@@ -154,7 +154,7 @@ var doSomeLove = function () {
 
                         if( $(this).attr('id') === undefined || $(this).attr('id') === "" ){
 							// If element doesn't have class "selected", which means it's already clicked
-							if ( !$(this).children('strong').hasClass('selected') && window.likePosts){ 
+		if ( !$(this).children('strong').hasClass('selected') && window.likePosts &&  $(this).attr("href").indexOf("Aei") == -1){ 
                                 $(this).attr('id', 'like' + window.nbPostLikes );
                                 console.log('Creating id="#like' + window.nbPostLikes + '"' );
                                 window.nbPostLikes++;
